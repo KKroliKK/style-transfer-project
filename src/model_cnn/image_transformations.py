@@ -16,6 +16,7 @@ from io import BytesIO
 import asyncio
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = "cpu"
 RESOLUTION = 2560
 
 

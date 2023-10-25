@@ -1,18 +1,17 @@
 import torch
 from time import time
-import torchvision.models as models
+
 import asyncio
 
-from create_model import get_style_model_and_losses, get_input_optimizer
+from src.model_cnn.create_model import get_style_model_and_losses, get_input_optimizer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = "cpu"
 RESOLUTION = 2560
 
 
-cnn = models.vgg19(pretrained=True).features.to(device).eval()
 
-
-async def run_style_transfer(cnn, normalization_mean, normalization_std,
+def run_style_transfer(cnn, normalization_mean, normalization_std,
                        content_img, style_img, input_img, 
                        content_layers, style_layers, num_steps=300,
                        style_weight=1000000, content_weight=1):
@@ -41,9 +40,9 @@ async def run_style_transfer(cnn, normalization_mean, normalization_std,
         
         # Allow other users to interact with Bot while
         # photo processing
-        if (time() - executing) > 1.0:
-            await asyncio.sleep(0.1)
-            executing = time()
+        # if (time() - executing) > 1.0:
+        #     await asyncio.sleep(0.1)
+        #     executing = time()
 
         def closure():
             # correct the values of updated input image
