@@ -4,8 +4,10 @@ import torch.nn.functional as F
 
 
 class ContentLoss(nn.Module):
-
-    def __init__(self, target,):
+    def __init__(
+        self,
+        target,
+    ):
         super(ContentLoss, self).__init__()
         self.target = target.detach()
 
@@ -24,7 +26,6 @@ def gram_matrix(input):
 
 
 class StyleLoss(nn.Module):
-
     def __init__(self, target_feature):
         super(StyleLoss, self).__init__()
         self.target = gram_matrix(target_feature).detach()
