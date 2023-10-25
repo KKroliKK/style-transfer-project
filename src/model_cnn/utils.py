@@ -1,7 +1,5 @@
 import torch
-
 import json
-
 import torchvision
 
 from aiogram.types.input_file import InputFile
