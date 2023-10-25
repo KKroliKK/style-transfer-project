@@ -1,14 +1,11 @@
 import torch
 from time import time
 
-import asyncio
 
 from src.model_cnn.create_model import get_style_model_and_losses, get_input_optimizer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# device = "cpu"
-RESOLUTION = 2560
-
+RESOLUTION = 480
 
 
 def run_style_transfer(cnn, normalization_mean, normalization_std,
@@ -24,8 +21,6 @@ def run_style_transfer(cnn, normalization_mean, normalization_std,
         normalization_mean, normalization_std, style_img, content_img,
         content_layers, style_layers)
 
-    # We want to optimize the input and not the model parameters so we
-    # update all the requires_grad fields accordingly
     input_img.requires_grad_(True)
     model.requires_grad_(False)
 
@@ -37,15 +32,8 @@ def run_style_transfer(cnn, normalization_mean, normalization_std,
     executing = time()
 
     while run[0] <= num_steps:
-        
-        # Allow other users to interact with Bot while
-        # photo processing
-        # if (time() - executing) > 1.0:
-        #     await asyncio.sleep(0.1)
-        #     executing = time()
 
         def closure():
-            # correct the values of updated input image
             with torch.no_grad():
                 input_img.clamp_(0, 1)
 
@@ -76,7 +64,6 @@ def run_style_transfer(cnn, normalization_mean, normalization_std,
 
         optimizer.step(closure)
 
-    # a last correction...
     with torch.no_grad():
         input_img.clamp_(0, 1)
     

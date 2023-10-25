@@ -11,7 +11,6 @@ from src.model_cnn.image_transformations import cnn_normalization_mean, cnn_norm
 from src.model_cnn.create_model import cnn
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# device = "cpu"
 
 
 def get_transformed_photo(style, content, content_weight=30):
@@ -22,7 +21,6 @@ def get_transformed_photo(style, content, content_weight=30):
 
     style_img, content_img, input_img = image_loader(style, content, resolution)
     
-    # desired depth layers to compute style/content losses :
     content_layers = ['conv_4']
     style_layers = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
 
@@ -30,10 +28,10 @@ def get_transformed_photo(style, content, content_weight=30):
                                 content_img, style_img, input_img, content_layers, style_layers,
                                 content_weight=content_weight)    
 
-    # buff = BytesIO()
-    # torchvision.utils.save_image(result, buff, 'PNG')
-    # buff.seek(0)
-    # result = InputFile(buff)
+    buff = BytesIO()
+    torchvision.utils.save_image(result, buff, 'PNG')
+    buff.seek(0)
+    result = InputFile(buff)
 
     return result
 

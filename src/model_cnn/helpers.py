@@ -1,24 +1,9 @@
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-
 from PIL import Image
-from time import time
-import json
-
 import matplotlib.pyplot as plt
-
-import torchvision
 import torchvision.transforms as transforms
-import torchvision.models as models
-
-from aiogram.types.input_file import InputFile
-from io import BytesIO
-import asyncio
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# device = "cpu"
 RESOLUTION = 240
 
 
