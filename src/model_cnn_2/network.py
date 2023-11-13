@@ -19,8 +19,8 @@ class ConditionalInstanceNormalization(nn.Module):
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """
-        x: Input tensor
-        style: Style tensor
+        :param x: Input tensor
+        :param style: Style tensor
         """
 
         b, c, h, w = x.size()
@@ -41,12 +41,12 @@ class ConvolutionalLayer(nn.Module):
 
     def __init__(self, num_style: int, in_fm: int, out_fm: int, stride: int, activation: str, kernel_size: int):
         """
-        num_style: Number of styles
-        in_fm: Number of input Feature maps
-        out_fm: Number of output Feature maps
-        stride: Stride 
-        activation: ReLU (relu) or Linear (linear) or Sigmoid (sigmoid)
-        kernel_size: Kernel_size
+        :param num_style: Number of styles
+        :param in_fm: Number of input Feature maps
+        :param out_fm: Number of output Feature maps
+        :param stride: Stride
+        :param activation: ReLU (relu) or Linear (linear) or Sigmoid (sigmoid)
+        :param kernel_size: Kernel_size
         """
         
         super(ConvolutionalLayer, self).__init__()
@@ -65,8 +65,8 @@ class ConvolutionalLayer(nn.Module):
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """
-        x: Input tensor
-        style: Style tensor
+        :param x: Input tensor
+        :param style: Style tensor
         """
 
         x = self.padding(x)
@@ -82,9 +82,9 @@ class ResidualBlock(nn.Module):
 
     def __init__(self, num_style: int, in_fm: int, out_fm: int):
         """
-        num_style: Number of styles
-        in_fm: Number of input Feature maps
-        out_fm: Number of output Feature maps
+        :param num_style: Number of styles
+        :param in_fm: Number of input Feature maps
+        :param out_fm: Number of output Feature maps
         """
         
         super(ResidualBlock, self).__init__()
@@ -94,8 +94,8 @@ class ResidualBlock(nn.Module):
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """
-        x: Input tensor
-        style: Style tensor
+        :param x: Input tensor
+        :param style: Style tensor
         """
 
         out = self.conv1(x, style)
@@ -109,9 +109,9 @@ class UpsampleBlock(nn.Module):
 
     def __init__(self, num_style: int, in_fm: int, out_fm: int):
         """
-        num_style: Number of styles
-        in_fm: Number of input Feature maps
-        out_fm: Number of output Feature maps
+        :param num_style: Number of styles
+        :param in_fm: Number of input Feature maps
+        :param out_fm: Number of output Feature maps
         """
         
         super(UpsampleBlock, self).__init__()
@@ -120,8 +120,8 @@ class UpsampleBlock(nn.Module):
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """
-        x: Input tensor
-        style: Style tensor
+        :param x: Input tensor
+        :param style: Style tensor
         """
 
         x = self.upsample(x)
@@ -135,7 +135,7 @@ class NeuralNetwork(nn.Module):
 
     def __init__(self, num_style: int = 16):
         """
-        num_style: Number of styles
+        :param num_style: Number of styles
         """
         
         super(NeuralNetwork, self).__init__()
@@ -156,8 +156,8 @@ class NeuralNetwork(nn.Module):
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """
-        x: Input tensor
-        style: Style tensor
+        :param x: Input tensor
+        :param style: Style tensor
         """
 
         x = self.conv1(x, style)
