@@ -10,7 +10,7 @@ class ConditionalInstanceNormalization(nn.Module):
         num_style: Number of styles
         num_ch: Number of Feature maps
         """
-        
+
         super(ConditionalInstanceNormalization, self).__init__()
 
         self.normalize = nn.InstanceNorm2d(num_ch, affine=False)
@@ -48,7 +48,7 @@ class ConvolutionalLayer(nn.Module):
         :param activation: ReLU (relu) or Linear (linear) or Sigmoid (sigmoid)
         :param kernel_size: Kernel_size
         """
-        
+
         super(ConvolutionalLayer, self).__init__()
         self.padding = nn.ReflectionPad2d(kernel_size // 2)
         self.conv = nn.Conv2d(in_fm, out_fm, kernel_size, stride)
@@ -59,9 +59,6 @@ class ConvolutionalLayer(nn.Module):
 
         elif activation == "linear":
             self.activation = lambda x: x
-
-        elif activation == "sigmoid":
-            self.activation = nn.Sigmoid()
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """
@@ -86,7 +83,7 @@ class ResidualBlock(nn.Module):
         :param in_fm: Number of input Feature maps
         :param out_fm: Number of output Feature maps
         """
-        
+
         super(ResidualBlock, self).__init__()
 
         self.conv1 = ConvolutionalLayer(num_style, in_fm, out_fm, 1, "relu", 3)
@@ -113,7 +110,7 @@ class UpsampleBlock(nn.Module):
         :param in_fm: Number of input Feature maps
         :param out_fm: Number of output Feature maps
         """
-        
+
         super(UpsampleBlock, self).__init__()
         self.conv = ConvolutionalLayer(num_style, in_fm, out_fm, 1, "relu", 3)
         self.upsample = nn.Upsample(scale_factor=2, mode='nearest')
@@ -133,11 +130,11 @@ class UpsampleBlock(nn.Module):
 class NeuralNetwork(nn.Module):
     """Style Transfer Neural Network"""
 
-    def __init__(self, num_style: int = 16):
+    def __init__(self, num_style: int = 8):
         """
         :param num_style: Number of styles
         """
-        
+
         super(NeuralNetwork, self).__init__()
         self.conv1 = ConvolutionalLayer(num_style, 3, 32, 1, 'relu', 9)
         self.conv2 = ConvolutionalLayer(num_style, 32, 64, 2, 'relu', 3)
@@ -152,7 +149,7 @@ class NeuralNetwork(nn.Module):
         self.upsampling1 = UpsampleBlock(num_style, 128, 64)
         self.upsampling2 = UpsampleBlock(num_style, 64, 32)
 
-        self.conv4 = ConvolutionalLayer(num_style, 32, 3, 1, 'sigmoid', 9)
+        self.conv4 = ConvolutionalLayer(num_style, 32, 3, 1, 'linear', 9)
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """

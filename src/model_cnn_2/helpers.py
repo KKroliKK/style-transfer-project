@@ -8,34 +8,6 @@ from pathlib import Path
 MEAN = (0.485, 0.456, 0.406)
 STD = (0.229, 0.224, 0.225)
 
-normalize = T.Normalize(mean=MEAN, std=STD)
-denormalize = T.Normalize(mean=[-m/s for m, s in zip(MEAN, STD)], std=[1/std for std in STD])
-
-
-def get_transforms(im_size: int = None, crop_size: int = None, centre_crop: bool = False) -> T.Compose:
-    """
-    Make the transformer
-
-    :param im_size: Image size
-    :param crop_size: Crop size
-    :param centre_crop: Do centre crop if True else random
-    :return: Transformer
-    """
-
-    transformer = []
-    if im_size:
-        transformer.append(T.Resize(im_size))
-    if crop_size:
-        if centre_crop:
-            transformer.append(T.CenterCrop(crop_size))
-        else:
-            transformer.append(T.RandomCrop(crop_size))
-
-    transformer.append(T.ToTensor())
-    transformer.append(normalize)
-
-    return T.Compose(transformer)
-
 
 def im_load(path: str, im_size: int = None, crop_size: int = None, centre_crop: bool = False) -> torch.Tensor:
     """
@@ -62,9 +34,34 @@ def im_save(image, save_path):
     :param image: styled image
     :param save_path: Path of the styled image to save
     """
-
+    denormalize = T.Normalize(mean=[-m / s for m, s in zip(MEAN, STD)], std=[1 / std for std in STD])
     image = denormalize(torchvision.utils.make_grid(image)).clamp_(0.0, 1.0)
     torchvision.utils.save_image(image, save_path)
+
+
+def get_transforms(im_size: int = None, crop_size: int = None, centre_crop: bool = False) -> T.Compose:
+    """
+    Make the transformer
+
+    :param im_size: Image size
+    :param crop_size: Crop size
+    :param centre_crop: Do centre crop if True else random
+    :return: Transformer
+    """
+
+    transformer = []
+    if im_size:
+        transformer.append(T.Resize(im_size))
+    if crop_size:
+        if centre_crop:
+            transformer.append(T.CenterCrop(crop_size))
+        else:
+            transformer.append(T.RandomCrop(crop_size))
+
+    transformer.append(T.ToTensor())
+    transformer.append(T.Normalize(mean=MEAN, std=STD))
+
+    return T.Compose(transformer)
 
 
 class ImageDataset(Dataset):
