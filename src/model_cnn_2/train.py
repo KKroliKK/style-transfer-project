@@ -111,7 +111,7 @@ def train(model, optimizer, loss_network, content_dataloader, style_dataloader):
         if i % 500 == 0 and i != 0:
             torch.save(model.state_dict(), model_path + f"model-{i}.ckpt")
 
-    torch.save(model.state_dict(), model_path + "model123.ckpt")
+    torch.save(model.state_dict(), model_path + "model.ckpt")
 
 
 def run():
