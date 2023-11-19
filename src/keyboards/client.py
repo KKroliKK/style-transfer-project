@@ -1,5 +1,4 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 b1 = KeyboardButton("/process_photo")
 b2 = KeyboardButton("/help")

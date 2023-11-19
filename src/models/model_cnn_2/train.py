@@ -1,14 +1,14 @@
-import torch
 from pathlib import Path
-from torch.optim import Adam
-from network import NeuralNetwork
-from torch.utils.data import DataLoader
-from torchvision.models import vgg16, VGG16_Weights
-from torchvision.models.feature_extraction import create_feature_extractor
-from helpers import ImageDataset, DataProcessor
-from losses import get_content_loss, get_style_loss, get_total_variation_loss
-from tqdm import tqdm
 
+import torch
+from helpers import DataProcessor, ImageDataset
+from losses import get_content_loss, get_style_loss, get_total_variation_loss
+from network import NeuralNetwork
+from torch.optim import Adam
+from torch.utils.data import DataLoader
+from torchvision.models import VGG16_Weights, vgg16
+from torchvision.models.feature_extraction import create_feature_extractor
+from tqdm import tqdm
 
 # set nodes
 content_nodes = ["relu_3_3"]

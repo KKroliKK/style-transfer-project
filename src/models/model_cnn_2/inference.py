@@ -1,7 +1,6 @@
 import torch
+from helpers import im_load, im_save
 from network import NeuralNetwork
-from helpers import im_save, im_load
-
 
 # set consts
 NUM_STYLE = 8

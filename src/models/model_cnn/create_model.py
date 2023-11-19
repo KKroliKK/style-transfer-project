@@ -7,8 +7,6 @@ from src.model_cnn.image_transformations import Normalization
 from src.model_cnn.losses import ContentLoss, StyleLoss
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-RESOLUTION = 480
-
 
 cnn = models.vgg19(pretrained=True).features.to(device).eval()
 

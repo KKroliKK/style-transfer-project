@@ -1,19 +1,18 @@
-from aiogram.dispatcher.filters.state import StatesGroup, State
+from io import BytesIO
+
+import requests
 from aiogram import types
-from create_bot import dp, bot
-from aiogram.types import ReplyKeyboardRemove
-from data_base import example_photos, style_photos
-from messages import mes
-from keyboards.client import menu
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from style_transfer import get_transformed_photo
-from create_bot import DOWNLOAD_URL
-import requests
-from io import BytesIO
-from create_bot import ID_ADMIN
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
+                           ReplyKeyboardRemove)
 
+from create_bot import DOWNLOAD_URL, ID_ADMIN, bot, dp
+from data_base import example_photos, style_photos
+from keyboards.client import menu
+from messages import mes
+from style_transfer import get_transformed_photo
 
 start_inline = InlineKeyboardMarkup(row_width=1).add(
     InlineKeyboardButton(text=mes.see_example, callback_data="example")
@@ -46,7 +45,7 @@ class FSMProcess(StatesGroup):
 
 style_inline = InlineKeyboardMarkup(row_width=1).add(
     InlineKeyboardButton(
-        text="Download your own style photo", callback_data="download"
+        text="Upload your own style photo", callback_data="download"
     ),
     InlineKeyboardButton(
         text="Choose a ready-made style photo", callback_data="choose"

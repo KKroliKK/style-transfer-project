@@ -1,10 +1,12 @@
-from create_bot import bot
+import os
 import sqlite3 as sq
+
+from create_bot import bot
 
 
 def start():
     global base, cur
-    base = sq.connect("example_photos.sqlite")
+    base = sq.connect(os.path.join("data", "databases", "example_photos.sqlite"))
     cur = base.cursor()
     base.execute(
         "CREATE TABLE IF NOT EXISTS example(id INTEGER PRIMARY KEY AUTOINCREMENT, img TEXT)"

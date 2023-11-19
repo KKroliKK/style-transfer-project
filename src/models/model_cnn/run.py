@@ -2,7 +2,8 @@ from time import time
 
 import torch
 
-from src.model_cnn.create_model import get_input_optimizer, get_style_model_and_losses
+from src.model_cnn.create_model import (get_input_optimizer,
+                                        get_style_model_and_losses)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 RESOLUTION = 480

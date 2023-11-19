@@ -1,1 +1,1 @@
-from data_base import style_photos, example_photos
+from data_base import example_photos, style_photos

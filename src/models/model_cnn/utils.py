@@ -7,10 +7,8 @@ from aiogram.types.input_file import InputFile
 
 from src.model_cnn.create_model import cnn
 from src.model_cnn.helpers import image_loader
-from src.model_cnn.image_transformations import (
-    cnn_normalization_mean,
-    cnn_normalization_std,
-)
+from src.model_cnn.image_transformations import (cnn_normalization_mean,
+                                                 cnn_normalization_std)
 from src.model_cnn.run import run_style_transfer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

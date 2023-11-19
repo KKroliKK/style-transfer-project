@@ -1,9 +1,10 @@
+from pathlib import Path
+
 import torch
-from torch.utils.data import Dataset
 import torchvision
 import torchvision.transforms as T
 from PIL import Image
-from pathlib import Path
+from torch.utils.data import Dataset
 
 MEAN = (0.485, 0.456, 0.406)
 STD = (0.229, 0.224, 0.225)

@@ -1,15 +1,15 @@
-from create_bot import dp, bot
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.dispatcher.filters import Text
+import json
+
 from aiogram import types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import Text
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+import keyboards
+from create_bot import ID_ADMIN, bot, dp
 from data_base import example_photos, style_photos
 from keyboards.admin import menu
-import keyboards
-import json
-from data_base import style_photos
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from create_bot import ID_ADMIN
 
 
 @dp.message_handler(commands="admin")
