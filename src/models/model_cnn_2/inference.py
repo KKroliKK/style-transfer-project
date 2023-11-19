@@ -15,7 +15,7 @@ def inference():
     """Inference of the network"""
 
     model = NeuralNetwork()
-    model.load_state_dict(torch.load(model_path + 'model.ckpt'))
+    model.load_state_dict(torch.load(model_path + "model.ckpt"))
     model.eval()
 
     content_image = im_load(content_file, im_size=256)
@@ -33,7 +33,7 @@ def inference():
         raise RuntimeError("Not expected style index")
 
     stylized_image = model(content_image, style_code)
-    im_save(stylized_image, save_path + 'new_images.jpg')
+    im_save(stylized_image, save_path + "new_images.jpg")
 
 
 if __name__ == "__main__":

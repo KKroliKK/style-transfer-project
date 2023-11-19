@@ -11,18 +11,13 @@ from tqdm import tqdm
 
 
 # set nodes
-content_nodes = ['relu_3_3']
-style_nodes = ['relu_1_2', 'relu_2_2', 'relu_3_3', 'relu_4_2']
-return_nodes = {
-    3: 'relu_1_2',
-    8: 'relu_2_2',
-    15: 'relu_3_3',
-    22: 'relu_4_2'
-}
+content_nodes = ["relu_3_3"]
+style_nodes = ["relu_1_2", "relu_2_2", "relu_3_3", "relu_4_2"]
+return_nodes = {3: "relu_1_2", 8: "relu_2_2", 15: "relu_3_3", 22: "relu_4_2"}
 
 # set consts
 NUM_STYLE = 8
-device = torch.device('cuda')
+device = torch.device("cuda")
 lr = 1e-3
 batch_size = 8
 style_weight = 5
@@ -39,17 +34,19 @@ def get_dataloaders():
     content_dataset = ImageDataset(dir_path=Path(content_path))
     style_dataset = ImageDataset(dir_path=Path(style_path))
 
-    data_processor = DataProcessor(im_size=256,
-                                   crop_size=240,
-                                   centre_crop=False)
-    content_dataloader = DataLoader(dataset=content_dataset,
-                                    batch_size=batch_size,
-                                    shuffle=True,
-                                    collate_fn=data_processor)
-    style_dataloader = DataLoader(dataset=style_dataset,
-                                  batch_size=batch_size,
-                                  shuffle=True,
-                                  collate_fn=data_processor)
+    data_processor = DataProcessor(im_size=256, crop_size=240, centre_crop=False)
+    content_dataloader = DataLoader(
+        dataset=content_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        collate_fn=data_processor,
+    )
+    style_dataloader = DataLoader(
+        dataset=style_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        collate_fn=data_processor,
+    )
 
     return content_dataloader, style_dataloader
 
@@ -57,7 +54,7 @@ def get_dataloaders():
 def train(model, optimizer, loss_network, content_dataloader, style_dataloader):
     """Train Loop"""
 
-    losses = {'content': [], 'style': [], 'tv': [], 'total': []}
+    losses = {"content": [], "style": [], "tv": [], "total": []}
 
     for i in tqdm(range(iterations)):
         content_images, _ = next(iter(content_dataloader))
@@ -81,23 +78,23 @@ def train(model, optimizer, loss_network, content_dataloader, style_dataloader):
         output_features = loss_network(output_images)
 
         # get losses
-        style_loss = get_style_loss(output_features,
-                                    style_features,
-                                    style_nodes)
-        content_loss = get_content_loss(output_features,
-                                        content_features,
-                                        content_nodes)
+        style_loss = get_style_loss(output_features, style_features, style_nodes)
+        content_loss = get_content_loss(
+            output_features, content_features, content_nodes
+        )
         total_variation_loss = get_total_variation_loss(output_images)
-        total_loss = content_loss + style_loss * style_weight + total_variation_loss * tv_weight
+        total_loss = (
+            content_loss + style_loss * style_weight + total_variation_loss * tv_weight
+        )
 
         optimizer.zero_grad()
         total_loss.backward()
         optimizer.step()
 
-        losses['content'].append(content_loss.item())
-        losses['style'].append(style_loss.item())
-        losses['tv'].append(total_variation_loss.item())
-        losses['total'].append(total_loss.item())
+        losses["content"].append(content_loss.item())
+        losses["style"].append(style_loss.item())
+        losses["tv"].append(total_variation_loss.item())
+        losses["total"].append(total_loss.item())
 
         # verbose
         if i % 100 == 0 and i != 0:
@@ -105,7 +102,7 @@ def train(model, optimizer, loss_network, content_dataloader, style_dataloader):
             for k, v in losses.items():
                 avg = sum(v) / len(v)
                 log += f"; {k}: {avg:1.4f}"
-                losses = {'content': [], 'style': [], 'tv': [], 'total': []}
+                losses = {"content": [], "style": [], "tv": [], "total": []}
             print(log)
 
         if i % 500 == 0 and i != 0:
@@ -139,5 +136,5 @@ def run():
     train(model, optimizer, loss_network, content_dataloader, style_dataloader)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

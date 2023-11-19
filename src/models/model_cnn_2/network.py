@@ -39,7 +39,15 @@ class ConditionalInstanceNormalization(nn.Module):
 class ConvolutionalLayer(nn.Module):
     """Convolution layer with Conditional Instance Normalization"""
 
-    def __init__(self, num_style: int, in_fm: int, out_fm: int, stride: int, activation: str, kernel_size: int):
+    def __init__(
+        self,
+        num_style: int,
+        in_fm: int,
+        out_fm: int,
+        stride: int,
+        activation: str,
+        kernel_size: int,
+    ):
         """
         :param num_style: Number of styles
         :param in_fm: Number of input Feature maps
@@ -113,7 +121,7 @@ class UpsampleBlock(nn.Module):
 
         super(UpsampleBlock, self).__init__()
         self.conv = ConvolutionalLayer(num_style, in_fm, out_fm, 1, "relu", 3)
-        self.upsample = nn.Upsample(scale_factor=2, mode='nearest')
+        self.upsample = nn.Upsample(scale_factor=2, mode="nearest")
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """
@@ -136,9 +144,9 @@ class NeuralNetwork(nn.Module):
         """
 
         super(NeuralNetwork, self).__init__()
-        self.conv1 = ConvolutionalLayer(num_style, 3, 32, 1, 'relu', 9)
-        self.conv2 = ConvolutionalLayer(num_style, 32, 64, 2, 'relu', 3)
-        self.conv3 = ConvolutionalLayer(num_style, 64, 128, 2, 'relu', 3)
+        self.conv1 = ConvolutionalLayer(num_style, 3, 32, 1, "relu", 9)
+        self.conv2 = ConvolutionalLayer(num_style, 32, 64, 2, "relu", 3)
+        self.conv3 = ConvolutionalLayer(num_style, 64, 128, 2, "relu", 3)
 
         self.residual1 = ResidualBlock(num_style, 128, 128)
         self.residual2 = ResidualBlock(num_style, 128, 128)
@@ -149,7 +157,7 @@ class NeuralNetwork(nn.Module):
         self.upsampling1 = UpsampleBlock(num_style, 128, 64)
         self.upsampling2 = UpsampleBlock(num_style, 64, 32)
 
-        self.conv4 = ConvolutionalLayer(num_style, 32, 3, 1, 'linear', 9)
+        self.conv4 = ConvolutionalLayer(num_style, 32, 3, 1, "linear", 9)
 
     def forward(self, x: torch.Tensor, style: torch.Tensor):
         """
