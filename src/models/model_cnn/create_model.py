@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision.models as models
 
-from src.model_cnn.image_transformations import Normalization
-from src.model_cnn.losses import ContentLoss, StyleLoss
+from model_cnn.image_transformations import Normalization
+from model_cnn.losses import ContentLoss, StyleLoss
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

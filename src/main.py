@@ -1,4 +1,8 @@
+import sys
+
 from aiogram.utils import executor
+
+sys.path.append("./models/model_cnn")
 
 from create_bot import dp
 from data_base import example_photos, style_photos
