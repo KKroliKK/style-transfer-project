@@ -44,7 +44,7 @@ async def get_transformed_photo(style, content, content_weight=30):
     return result
 
 
-def transfer_style(style, content, input):
+def transfer_style(style, content, input, content_weight=30):
     content_layers = ["conv_4"]
     style_layers = ["conv_1", "conv_2", "conv_3", "conv_4", "conv_5"]
 
@@ -57,7 +57,7 @@ def transfer_style(style, content, input):
         input,
         content_layers,
         style_layers,
-        content_weight=30,
+        content_weight=content_weight,
     )
 
     return result
