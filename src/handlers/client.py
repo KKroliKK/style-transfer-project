@@ -12,14 +12,6 @@ from create_bot import DOWNLOAD_URL, ID_ADMIN, bot, dp
 from data_base import example_photos, style_photos
 from keyboards.client import menu
 from messages import mes
-# from style_transfer import get_transformed_photo
-# import sys
-# sys.path.append("models\model_cnn\utils.py")
-# from utils import get_transformed_photo
-# from models.model_cnn.utils import get_transformed_photo
-# from models import get_transformed_photo
-# import models
-# from model_cnn import get_transformed_photo
 from model_cnn.utils import get_transformed_photo
 
 start_inline = InlineKeyboardMarkup(row_width=1).add(
@@ -151,7 +143,6 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
     )
 
     result = await get_transformed_photo(style, content)
-    # result = await models.model_cnn.get_transformed_photo(style, content)
 
     await bot.send_message(message.from_user.id, mes.result, reply_markup=menu)
     result_mes = await bot.send_photo(message.from_user.id, result)
