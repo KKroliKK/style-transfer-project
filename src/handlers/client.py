@@ -19,7 +19,7 @@ from messages import mes
 # from models.model_cnn.utils import get_transformed_photo
 # from models import get_transformed_photo
 # import models
-from models.model_cnn import get_transformed_photo
+from model_cnn import get_transformed_photo
 
 start_inline = InlineKeyboardMarkup(row_width=1).add(
     InlineKeyboardButton(text=mes.see_example, callback_data="example")

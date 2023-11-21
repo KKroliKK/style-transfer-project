@@ -15,7 +15,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 async def get_transformed_photo(style, content, content_weight=30):
-    with open("style_transfer/resolution.json") as json_file:
+    with open("data/resolution.json") as json_file:
         data = json.load(json_file)
         resolution = data["resolution"]
 
