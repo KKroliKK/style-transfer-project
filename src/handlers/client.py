@@ -45,9 +45,7 @@ class FSMProcess(StatesGroup):
 
 
 style_inline = InlineKeyboardMarkup(row_width=1).add(
-    InlineKeyboardButton(
-        text="Upload your own style photo", callback_data="download"
-    ),
+    InlineKeyboardButton(text="Upload your own style photo", callback_data="download"),
     InlineKeyboardButton(
         text="Choose a ready-made style photo", callback_data="choose"
     ),
@@ -145,9 +143,13 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
 
     result1 = await get_transformed_photo(style, content, optimizer=optim.LBFGS)
     result_mes = await bot.send_photo(message.from_user.id, result1)
-    result2 = await get_transformed_photo(style, content, content_weight=1, optimizer=optim.Adagrad)
+    result2 = await get_transformed_photo(
+        style, content, content_weight=1, optimizer=optim.Adagrad
+    )
     result_mes = await bot.send_photo(message.from_user.id, result2)
-    result3 = await get_transformed_photo(style, content, content_weight=0.0000001, optimizer=optim.RMSprop)
+    result3 = await get_transformed_photo(
+        style, content, content_weight=0.0000001, optimizer=optim.RMSprop
+    )
     result_mes = await bot.send_photo(message.from_user.id, result3)
 
     await bot.send_message(message.from_user.id, mes.result, reply_markup=menu)

@@ -1,10 +1,12 @@
-import os, sys
+import os
+import sys
+
 import numpy as np
 import torch
 from ffmpeg_tools import VideoReader, VideoWriter
 from network import ReCoNet
-from utils import preprocess_for_reconet, postprocess_reconet, Dummy, nhwc_to_nchw, nchw_to_nhwc
-
+from utils import (Dummy, nchw_to_nhwc, nhwc_to_nchw, postprocess_reconet,
+                   preprocess_for_reconet)
 
 input_path = "../../data/model_reconet/input/videoplayback.mp4"
 output_path = "../../data/model_reconet/output/output.mp4"
@@ -20,7 +22,9 @@ class ReCoNetModel:
 
         with self.device():
             self.model = ReCoNet()
-            self.model.load_state_dict(torch.load(state_dict_path, map_location='cuda:0'))
+            self.model.load_state_dict(
+                torch.load(state_dict_path, map_location="cuda:0")
+            )
             self.model = self.to_device(self.model)
             self.model.eval()
 

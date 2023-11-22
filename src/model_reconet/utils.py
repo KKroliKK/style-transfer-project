@@ -33,7 +33,7 @@ def warp_optical_flow(source, reverse_flow):
     reverse_flow[..., 1] *= 2 / h
     reverse_flow[..., 1] -= 1
 
-    return torch.nn.functional.grid_sample(source, reverse_flow, padding_mode='border')
+    return torch.nn.functional.grid_sample(source, reverse_flow, padding_mode="border")
 
 
 def occlusion_mask_from_flow(optical_flow, reverse_optical_flow, motion_boundaries):
@@ -48,7 +48,9 @@ def occlusion_mask_from_flow(optical_flow, reverse_optical_flow, motion_boundari
     reverse_magnitude = magnitude_squared(reverse_optical_flow)
     sum_magnitude = magnitude_squared(optical_flow + reverse_optical_flow)
 
-    occlusion_mask = sum_magnitude < (0.01 * (forward_magnitude + reverse_magnitude) + 0.5)
+    occlusion_mask = sum_magnitude < (
+        0.01 * (forward_magnitude + reverse_magnitude) + 0.5
+    )
     occlusion_mask &= ~motion_boundaries
     return occlusion_mask.to(torch.float32).unsqueeze_(1)
 
@@ -67,7 +69,9 @@ def mean_l2_squared(x):
 
 def resize_optical_flow(optical_flow, h, w):
     optical_flow_nchw = nhwc_to_nchw(optical_flow)
-    optical_flow_resized_nchw = torch.nn.functional.interpolate(optical_flow_nchw, size=(h, w), mode='bilinear')
+    optical_flow_resized_nchw = torch.nn.functional.interpolate(
+        optical_flow_nchw, size=(h, w), mode="bilinear"
+    )
     optical_flow_resized = nchw_to_nhwc(optical_flow_resized_nchw)
 
     old_h, old_w = optical_flow_nchw.shape[-2:]
@@ -91,9 +95,9 @@ def normalize_batch(batch, mean, std):
 
 
 def preprocess_for_vgg(images_batch):
-    return normalize_batch(images_batch,
-                           mean=[0.485, 0.456, 0.406],
-                           std=[0.229, 0.224, 0.225])
+    return normalize_batch(
+        images_batch, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+    )
 
 
 def preprocess_for_reconet(images_batch):
@@ -107,7 +111,6 @@ def postprocess_reconet(images_batch):
 
 
 class RunningLossesContainer:
-
     def __init__(self):
         self.values = defaultdict(lambda: 0)
         self.counters = defaultdict(lambda: 0)
@@ -126,7 +129,6 @@ class RunningLossesContainer:
 
 
 class Dummy:
-
     def __init__(self, *args, **kwargs):
         pass
 
