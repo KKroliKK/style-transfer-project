@@ -2,15 +2,14 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.models as models
+from torchvision.models import VGG19_Weights
 
-from src.model_cnn.image_transformations import Normalization
-from src.model_cnn.losses import ContentLoss, StyleLoss
+from model_cnn.image_transformations import Normalization
+from model_cnn.losses import ContentLoss, StyleLoss
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-RESOLUTION = 480
 
-
-cnn = models.vgg19(pretrained=True).features.to(device).eval()
+cnn = models.vgg19(weights=VGG19_Weights.DEFAULT).features.to(device).eval()
 
 
 def get_style_model_and_losses(
@@ -69,6 +68,6 @@ def get_style_model_and_losses(
     return model, style_losses, content_losses
 
 
-def get_input_optimizer(input_img):
-    optimizer = optim.LBFGS([input_img])
+def get_input_optimizer(input_img, optimizer=optim.LBFGS):
+    optimizer = optimizer([input_img])
     return optimizer

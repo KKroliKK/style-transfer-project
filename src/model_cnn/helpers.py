@@ -4,18 +4,15 @@ import torchvision.transforms as transforms
 from PIL import Image
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-RESOLUTION = 240
 
 
-def image_loader(style, content, resolution=RESOLUTION):
+def image_loader(style, content, resolution):
     content = Image.open(content)
     style = Image.open(style)
 
-    scale = max(content.size)
-    scale = (
-        int(content.size[1] * resolution / scale),
-        int(content.size[0] * resolution / scale),
-    )
+    max_pixels = max(content.size)
+    scale = resolution / max_pixels if resolution < max_pixels else 1
+    scale = (int(content.size[1] * scale), int(content.size[0] * scale))
 
     loader = transforms.Compose([transforms.Resize(scale), transforms.ToTensor()])
 

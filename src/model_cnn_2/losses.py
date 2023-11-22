@@ -2,7 +2,9 @@ import torch
 from torch.nn.functional import mse_loss
 
 
-def get_content_loss(features: torch.Tensor, targets: torch.Tensor, nodes: list) -> torch.Tensor:
+def get_content_loss(
+    features: torch.Tensor, targets: torch.Tensor, nodes: list
+) -> torch.Tensor:
     """
     Get Content Loss
 
@@ -18,7 +20,9 @@ def get_content_loss(features: torch.Tensor, targets: torch.Tensor, nodes: list)
     return loss
 
 
-def get_style_loss(features: torch.Tensor, targets: torch.Tensor, nodes: list) -> torch.Tensor:
+def get_style_loss(
+    features: torch.Tensor, targets: torch.Tensor, nodes: list
+) -> torch.Tensor:
     """
     Get Style Loss
 
@@ -43,7 +47,9 @@ def get_style_loss(features: torch.Tensor, targets: torch.Tensor, nodes: list) -
 
     loss = 0
     for node in nodes:
-        loss += mse_loss(get_gram_matrix(features[node]), get_gram_matrix(targets[node]))
+        loss += mse_loss(
+            get_gram_matrix(features[node]), get_gram_matrix(targets[node])
+        )
     return loss
 
 
@@ -55,6 +61,7 @@ def get_total_variation_loss(x: torch.Tensor) -> torch.Tensor:
     :return: Total Variation Loss value
     """
 
-    loss = (torch.mean(torch.abs(x[:, :, :, :-1] - x[:, :, :, 1:]))
-            + torch.mean(torch.abs(x[:, :, :-1, :] - x[:, :, 1:, :])))
+    loss = torch.mean(torch.abs(x[:, :, :, :-1] - x[:, :, :, 1:])) + torch.mean(
+        torch.abs(x[:, :, :-1, :] - x[:, :, 1:, :])
+    )
     return loss
