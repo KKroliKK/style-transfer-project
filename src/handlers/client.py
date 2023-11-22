@@ -143,11 +143,10 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
         requests.get(DOWNLOAD_URL + content.file_path, stream=True).content
     )
 
-    # result1 = await get_transformed_photo(style, content, optimizer=optim.LBFGS)
-    # result_mes = await bot.send_photo(message.from_user.id, result1)
+    result1 = await get_transformed_photo(style, content, optimizer=optim.LBFGS)
+    result_mes = await bot.send_photo(message.from_user.id, result1)
     result2 = await get_transformed_photo(style, content, content_weight=1, optimizer=optim.Adagrad)
     result_mes = await bot.send_photo(message.from_user.id, result2)
-    # result3 = await get_transformed_photo(style, content, content_weight=0.01, optimizer=optim.Adam)
     result3 = await get_transformed_photo(style, content, content_weight=0.0000001, optimizer=optim.RMSprop)
     result_mes = await bot.send_photo(message.from_user.id, result3)
 
