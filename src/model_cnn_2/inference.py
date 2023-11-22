@@ -1,6 +1,6 @@
 import torch
-from helpers import im_load, im_save
-from network import NeuralNetwork
+from model_cnn_2.helpers import im_load, im_save
+from model_cnn_2.network import NeuralNetwork
 
 # set consts
 NUM_STYLE = 8
@@ -10,9 +10,8 @@ save_path = "../../data/model_cnn_2/inference/"
 style_index = -1
 
 
-def inference():
+def inference(content_file, model_path, save_path, style_index):
     """Inference of the network"""
-
     model = NeuralNetwork()
     model.load_state_dict(torch.load(model_path + "model.ckpt"))
     model.eval()
@@ -32,8 +31,9 @@ def inference():
         raise RuntimeError("Not expected style index")
 
     stylized_image = model(content_image, style_code)
+
     im_save(stylized_image, save_path + "new_images.jpg")
 
 
 if __name__ == "__main__":
-    inference()
+    inference(content_file, model_path, save_path, style_index)

@@ -1,9 +1,9 @@
 from pathlib import Path
 
 import torch
-from helpers import DataProcessor, ImageDataset
-from losses import get_content_loss, get_style_loss, get_total_variation_loss
-from network import NeuralNetwork
+from model_cnn_2.helpers import DataProcessor, ImageDataset
+from model_cnn_2.losses import get_content_loss, get_style_loss, get_total_variation_loss
+from model_cnn_2.network import NeuralNetwork
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from torchvision.models import VGG16_Weights, vgg16

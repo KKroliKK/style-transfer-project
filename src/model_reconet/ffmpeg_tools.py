@@ -1,6 +1,5 @@
 import json
 import shlex
-from math import ceil
 from subprocess import DEVNULL, PIPE, Popen, check_output
 
 import numpy as np
