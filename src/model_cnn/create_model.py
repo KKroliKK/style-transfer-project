@@ -68,6 +68,6 @@ def get_style_model_and_losses(
     return model, style_losses, content_losses
 
 
-def get_input_optimizer(input_img):
-    optimizer = optim.LBFGS([input_img])
+def get_input_optimizer(input_img, optimizer=optim.LBFGS):
+    optimizer = optimizer([input_img])
     return optimizer

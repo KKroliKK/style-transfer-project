@@ -1,6 +1,7 @@
 from time import time
 
 import torch
+import torch.optim as optim
 
 from model_cnn.create_model import (get_input_optimizer,
                                         get_style_model_and_losses)
@@ -18,6 +19,7 @@ def run_style_transfer(
     input_img,
     content_layers,
     style_layers,
+    optimizer=optim.LBFGS,
     num_steps=300,
     style_weight=1000000,
     content_weight=1,
@@ -40,7 +42,7 @@ def run_style_transfer(
     input_img.requires_grad_(True)
     model.requires_grad_(False)
 
-    optimizer = get_input_optimizer(input_img)
+    optimizer = get_input_optimizer(input_img, optimizer=optimizer)
 
     print("Optimizing..")
     run = [0]

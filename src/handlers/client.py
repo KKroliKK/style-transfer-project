@@ -1,6 +1,7 @@
 from io import BytesIO
 
 import requests
+import torch.optim as optim
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -142,12 +143,18 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
         requests.get(DOWNLOAD_URL + content.file_path, stream=True).content
     )
 
-    result = await get_transformed_photo(style, content)
+    # result1 = await get_transformed_photo(style, content, optimizer=optim.LBFGS)
+    # result_mes = await bot.send_photo(message.from_user.id, result1)
+    result2 = await get_transformed_photo(style, content, content_weight=1, optimizer=optim.Adagrad)
+    result_mes = await bot.send_photo(message.from_user.id, result2)
+    # result3 = await get_transformed_photo(style, content, content_weight=0.01, optimizer=optim.Adam)
+    result3 = await get_transformed_photo(style, content, content_weight=0.0000001, optimizer=optim.RMSprop)
+    result_mes = await bot.send_photo(message.from_user.id, result3)
 
     await bot.send_message(message.from_user.id, mes.result, reply_markup=menu)
-    result_mes = await bot.send_photo(message.from_user.id, result)
+    # result_mes = await bot.send_photo(message.from_user.id, result)
     await state.finish()
 
-    await bot.send_photo(ID_ADMIN, style_id)
-    await bot.send_photo(ID_ADMIN, message.photo[-1].file_id)
-    await bot.send_photo(ID_ADMIN, result_mes.photo[-1].file_id)
+    # await bot.send_photo(ID_ADMIN, style_id)
+    # await bot.send_photo(ID_ADMIN, message.photo[-1].file_id)
+    # await bot.send_photo(ID_ADMIN, result_mes.photo[-1].file_id)
