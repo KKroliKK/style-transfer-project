@@ -10,25 +10,46 @@ save_path = "../../data/model_cnn_2/inference/"
 style_index = -1
 
 
-def inference(content_file, model_path, save_path, style_index):
-    """Inference of the network"""
+def inference(content_file: str, model_path: str, save_path: str, style_index: dict or int):
+    """
+    Inference of the network
+
+    :param content_file: path of the image
+    :param model_path: path of the trained model
+    :param save_path: path save image to
+    :param style_index: if value is -1 -> get all styles for content_file image
+                        if value from 0 to (NUM_STYLES - 1) -> get specific style
+                        if value is dict -> mix style, where key is used style and value is level
+    """
     model = NeuralNetwork()
     model.load_state_dict(torch.load(model_path + "model.ckpt"))
     model.eval()
 
     content_image = im_load(content_file, im_size=256)
-    # for all styles
-    if style_index == -1:
-        style_code = torch.eye(NUM_STYLE).unsqueeze(-1)
-        content_image = content_image.repeat(NUM_STYLE, 1, 1, 1)
 
-    # for specific style
-    elif style_index in range(NUM_STYLE):
+    # one of the given styles
+    if type(style_index) is int:
+        # for all styles
+        if style_index == -1:
+            style_code = torch.eye(NUM_STYLE).unsqueeze(-1)
+            content_image = content_image.repeat(NUM_STYLE, 1, 1, 1)
+
+        # for specific style
+        elif style_index in range(NUM_STYLE):
+            style_code = torch.zeros(1, NUM_STYLE, 1)
+            style_code[:, style_index, :] = 1
+
+        else:
+            raise RuntimeError("Not expected style index")
+    # mix styles
+    elif type(style_index) is dict:
         style_code = torch.zeros(1, NUM_STYLE, 1)
-        style_code[:, style_index, :] = 1
 
-    else:
-        raise RuntimeError("Not expected style index")
+        for key in style_index:
+            if key in range(NUM_STYLE):
+                style_code[:, key, :] = style_index[key]
+            else:
+                raise RuntimeError("Not expected style index")
 
     stylized_image = model(content_image, style_code)
 
