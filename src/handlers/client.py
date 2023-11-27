@@ -2,6 +2,7 @@ from io import BytesIO
 
 import requests
 import torch.optim as optim
+import numpy as np
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -44,6 +45,7 @@ class FSMProcess(StatesGroup):
     download_style = State()
     assign_style = State()
     load_content = State()
+    load_content_cnn2 = State()
 
 
 model_inline = InlineKeyboardMarkup(row_width=1).add(
@@ -74,12 +76,13 @@ style_inline = InlineKeyboardMarkup(row_width=1).add(
 
 
 @dp.callback_query_handler(Text(equals="model_1"), state=FSMProcess.choose_model)
-async def choose_style(message: types.Message):
+async def choose_style(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer("1-st model is chosen")
     await FSMProcess.choose_style.set()
     await bot.send_message(
-        message.from_user.id, mes.style_1, reply_markup=ReplyKeyboardRemove()
+        callback.from_user.id, mes.style_1, reply_markup=ReplyKeyboardRemove()
     )
-    await bot.send_message(message.from_user.id, mes.style_2, reply_markup=style_inline)
+    await bot.send_message(callback.from_user.id, mes.style_2, reply_markup=style_inline)
 
 
 @dp.callback_query_handler(Text(equals="cancel"), state="*")  # FSMProcess.choose_style)
@@ -135,9 +138,6 @@ async def save_choosed_style(callback: types.CallbackQuery, state: FSMContext):
     await FSMProcess.load_content.set()
     await callback.answer(text="The choise is accepted")
     async with state.proxy() as data:
-        callback_data = callback.data
-        print(callback_data.replace("index: ", ""))
-
         style = await style_photos.get(callback.data.replace("index: ", ""))
         data["style"] = style[0]
     await bot.send_message(
@@ -186,7 +186,21 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
 # model 2
 
 @dp.callback_query_handler(Text(equals="model_2"), state=FSMProcess.choose_model)
-async def choose_style(message: types.Message):
+async def choose_style(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer("2-nd model is chosen")
     await FSMProcess.choose_styles_cnn2.set()
-    await example_photos.get_cnn2_styles(message)
-    await bot.send_message(message.from_user.id, mes.style_proportions, reply_markup=cancel_inline)
+    await example_photos.get_cnn2_styles(callback)
+    await bot.send_message(callback.from_user.id, mes.style_proportions, reply_markup=cancel_inline)
+
+
+@dp.message_handler(state=FSMProcess.choose_styles_cnn2)
+async def choose_style(message: types.Message):
+    try:
+        array = np.array([int(x) for x in message.text.split()])
+        assert ((array <= 7) & (array >=0)).sum() == len(array)
+    except:
+        await bot.send_message(message.from_user.id, "Please try again", reply_markup=cancel_inline)
+        return
+    
+    await bot.send_message(message.from_user.id, mes.content_photo_cnn2, reply_markup=cancel_inline)
+    await FSMProcess.load_content_cnn2.set()

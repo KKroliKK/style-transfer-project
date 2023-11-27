@@ -30,3 +30,4 @@ result = "Here is the result:\n"
 style_proportions = "Now you need to choose which styles you want to use.\n\
 Enter styles which you want to use separated by spaces.\n\
 Example: 1 3"
+content_photo_cnn2="Now you can send your photo to apply styles on."
