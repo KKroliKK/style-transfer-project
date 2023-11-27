@@ -43,7 +43,7 @@ class ConvNormReLULayer(nn.Module):
         self.layers = nn.Sequential(
             ConvLayer(in_channels, out_channels, kernel_size, stride),
             nn.InstanceNorm2d(out_channels, affine=True),
-            nn.ReLU(inplace=True)
+            nn.ReLU(inplace=True),
         )
 
     def forward(self, x):
@@ -55,7 +55,7 @@ class ResNormReLULayer(nn.Module):
         super().__init__()
         self.branch = nn.Sequential(
             ConvNormReLULayer(in_channels, out_channels, kernel_size, 1),
-            ConvNormReLULayer(out_channels, out_channels, kernel_size, 1)
+            ConvNormReLULayer(out_channels, out_channels, kernel_size, 1),
         )
 
         self.activation = nn.ReLU(inplace=True)
@@ -70,8 +70,7 @@ class ConvTanhLayer(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
         super().__init__()
         self.layers = nn.Sequential(
-            ConvLayer(in_channels, out_channels, kernel_size, stride),
-            nn.Tanh()
+            ConvLayer(in_channels, out_channels, kernel_size, stride), nn.Tanh()
         )
 
     def forward(self, x):
@@ -88,7 +87,7 @@ class Encoder(nn.Module):
             ResNormReLULayer(192, 192, 3),
             ResNormReLULayer(192, 192, 3),
             ResNormReLULayer(192, 192, 3),
-            ResNormReLULayer(192, 192, 3)
+            ResNormReLULayer(192, 192, 3),
         )
 
     def forward(self, x):
@@ -103,7 +102,7 @@ class Decoder(nn.Module):
             ConvNormReLULayer(192, 96, 3, 1),
             nn.Upsample(scale_factor=2),
             ConvNormReLULayer(96, 48, 3, 1),
-            ConvTanhLayer(48, 3, 9, 1)
+            ConvTanhLayer(48, 3, 9, 1),
         )
 
     def forward(self, x):

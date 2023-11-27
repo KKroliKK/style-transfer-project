@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_TOKEN = os.environ.get('API_TOKEN')
-ID_ADMIN = os.environ.get('ID_ADMIN')
-DOWNLOAD_URL = 'https://api.telegram.org/file/bot' + API_TOKEN + '/'
+API_TOKEN = os.environ.get("API_TOKEN")
+ID_ADMIN = int(os.environ.get("ID_ADMIN"))
+DOWNLOAD_URL = "https://api.telegram.org/file/bot" + API_TOKEN + "/"
 
 storage = MemoryStorage()
 

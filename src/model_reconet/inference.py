@@ -1,10 +1,11 @@
-import os, sys
+import os
+
 import numpy as np
 import torch
-from ffmpeg_tools import VideoReader, VideoWriter
-from network import ReCoNet
-from utils import preprocess_for_reconet, postprocess_reconet, Dummy, nhwc_to_nchw, nchw_to_nhwc
-
+from model_reconet.ffmpeg_tools import VideoReader, VideoWriter
+from model_reconet.network import ReCoNet
+from model_reconet.utils import (Dummy, nchw_to_nhwc, nhwc_to_nchw, postprocess_reconet,
+                   preprocess_for_reconet)
 
 input_path = "../../data/model_reconet/input/videoplayback.mp4"
 output_path = "../../data/model_reconet/output/output.mp4"
@@ -20,7 +21,9 @@ class ReCoNetModel:
 
         with self.device():
             self.model = ReCoNet()
-            self.model.load_state_dict(torch.load(state_dict_path, map_location='cuda:0'))
+            self.model.load_state_dict(
+                torch.load(state_dict_path, map_location="cuda:0")
+            )
             self.model = self.to_device(self.model)
             self.model.eval()
 
@@ -69,7 +72,7 @@ def create_folder_for_file(path):
     os.makedirs(folder, exist_ok=True)
 
 
-if __name__ == "__main__":
+def inference(input_path, output_path, model_path, fps, batch_size):
     model = ReCoNetModel(model_path, use_gpu=True, gpu_device=0)
 
     reader = VideoReader(input_path, fps=fps)
@@ -93,3 +96,7 @@ if __name__ == "__main__":
             batch = np.array(batch)
             for styled_frame in model.run(batch):
                 writer.write(styled_frame)
+
+
+if __name__ == "__main__":
+    inference()

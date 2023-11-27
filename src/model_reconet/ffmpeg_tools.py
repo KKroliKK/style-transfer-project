@@ -1,7 +1,6 @@
-from math import ceil
-import shlex
 import json
-from subprocess import Popen, DEVNULL, PIPE, check_output
+import shlex
+from subprocess import DEVNULL, PIPE, Popen, check_output
 
 import numpy as np
 
@@ -17,7 +16,9 @@ def _default_param(value, default_value):
 
 
 def _ffprobe(file, cmd):
-    cmd = "{cmd} -loglevel fatal -print_format json -show_format -show_streams {file}".format(cmd=cmd, file=file)
+    cmd = "{cmd} -loglevel fatal -print_format json -show_format -show_streams {file}".format(
+        cmd=cmd, file=file
+    )
     output = check_output(shlex.split(cmd))
     return json.loads(output)
 
@@ -39,7 +40,9 @@ class _VideoIterator:
         cmd.append("-i {file}".format(file=reader.filepath))
         if self._reader.fps is not None:
             cmd.append("-filter fps=fps={fps}:round=up".format(fps=self._reader.fps))
-        cmd.append("-f rawvideo -pix_fmt {pix_fmt} pipe:".format(pix_fmt=reader.format + '24'))
+        cmd.append(
+            "-f rawvideo -pix_fmt {pix_fmt} pipe:".format(pix_fmt=reader.format + "24")
+        )
         cmd = " ".join(cmd)
 
         self._ffmpeg_output = Popen(shlex.split(cmd), stdout=PIPE, stdin=DEVNULL)
@@ -54,7 +57,9 @@ class _VideoIterator:
             self._close()
             raise StopIteration()
 
-        return np.frombuffer(in_bytes, np.uint8).reshape([self._reader.height, self._reader.width, 3])
+        return np.frombuffer(in_bytes, np.uint8).reshape(
+            [self._reader.height, self._reader.width, 3]
+        )
 
     def __iter__(self):
         return self
@@ -71,9 +76,18 @@ class _VideoIterator:
 
 
 class VideoReader:
-    def __init__(self, filepath, fps=None, format='rgb', ffmpeg_cmd="ffmpeg", ffprobe_cmd="ffprobe"):
+    def __init__(
+        self,
+        filepath,
+        fps=None,
+        format="rgb",
+        ffmpeg_cmd="ffmpeg",
+        ffprobe_cmd="ffprobe",
+    ):
         probe = self.probe = _ffprobe(filepath, cmd=ffprobe_cmd)
-        stream = next((stream for stream in probe["streams"] if stream['codec_type'] == "video"))
+        stream = next(
+            (stream for stream in probe["streams"] if stream["codec_type"] == "video")
+        )
 
         self.width = int(stream["width"])
         self.height = int(stream["height"])
@@ -92,16 +106,18 @@ class VideoReader:
 
 
 class VideoWriter:
-    def __init__(self,
-                 filepath,
-                 input_width,
-                 input_height,
-                 input_fps,
-                 input_format="rgb",
-                 output_width=None,
-                 output_height=None,
-                 output_format="yuv420p",
-                 ffmpeg_cmd="ffmpeg"):
+    def __init__(
+        self,
+        filepath,
+        input_width,
+        input_height,
+        input_fps,
+        input_format="rgb",
+        output_width=None,
+        output_height=None,
+        output_format="yuv420p",
+        ffmpeg_cmd="ffmpeg",
+    ):
         self.filepath = filepath
         self.input_width = input_width
         self.input_height = input_height
@@ -115,15 +131,21 @@ class VideoWriter:
     def __enter__(self):
         cmd = []
         cmd.append("{cmd} -y -loglevel error".format(cmd=self.ffmpeg_cmd))
-        cmd.append("-f rawvideo -pix_fmt {pix_fmt} -video_size {width}x{height} -framerate {fps} -i pipe:".format(
-            pix_fmt=self.input_format + '24',
-            width=self.input_width,
-            height=self.input_height,
-            fps=self.input_fps
-        ))
+        cmd.append(
+            "-f rawvideo -pix_fmt {pix_fmt} -video_size {width}x{height} -framerate {fps} -i pipe:".format(
+                pix_fmt=self.input_format + "24",
+                width=self.input_width,
+                height=self.input_height,
+                fps=self.input_fps,
+            )
+        )
         cmd.append("-pix_fmt {pix_fmt}".format(pix_fmt=self.output_format))
         if self.output_width is not None and self.output_height is not None:
-            cmd.append("-s {width}x{height}".format(width=self.output_width, height=self.output_height))
+            cmd.append(
+                "-s {width}x{height}".format(
+                    width=self.output_width, height=self.output_height
+                )
+            )
 
         cmd.append(self.filepath)
         cmd = " ".join(cmd)
@@ -132,7 +154,11 @@ class VideoWriter:
         return self
 
     def write(self, frame):
-        assert frame.dtype == np.uint8 and frame.ndim == 3 and frame.shape == (self.input_height, self.input_width, 3)
+        assert (
+            frame.dtype == np.uint8
+            and frame.ndim == 3
+            and frame.shape == (self.input_height, self.input_width, 3)
+        )
         self._ffmpeg_output.stdin.write(frame.tobytes())
 
     def __exit__(self, exc_type, exc_val, exc_tb):

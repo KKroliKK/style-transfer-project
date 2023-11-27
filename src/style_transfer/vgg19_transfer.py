@@ -25,19 +25,26 @@ def image_loader(style, content, resolution=RESOLUTION):
     scale = resolution / max_pixels if resolution < max_pixels else 1
     scale = (int(content.size[1] * scale), int(content.size[0] * scale))
 
-    loader = transforms.Compose([
-        transforms.Resize(scale),  # scale imported image
-        transforms.ToTensor()])  # transform it into a torch tensor
-  
+    loader = transforms.Compose(
+        [transforms.Resize(scale), transforms.ToTensor()]  # scale imported image
+    )  # transform it into a torch tensor
+
     content = loader(content).unsqueeze(0)
     style = loader(style).unsqueeze(0)
     output = content.clone()
 
-    return style.to(device, torch.float), content.to(device,torch.float), output.to(device,torch.float)
+    return (
+        style.to(device, torch.float),
+        content.to(device, torch.float),
+        output.to(device, torch.float),
+    )
+
 
 class ContentLoss(nn.Module):
-
-    def __init__(self, target,):
+    def __init__(
+        self,
+        target,
+    ):
         super(ContentLoss, self).__init__()
         # we 'detach' the target content from the tree used
         # to dynamically compute the gradient: this is a stated value,
@@ -65,7 +72,6 @@ def gram_matrix(input):
 
 
 class StyleLoss(nn.Module):
-
     def __init__(self, target_feature):
         super(StyleLoss, self).__init__()
         self.target = gram_matrix(target_feature).detach()
@@ -96,9 +102,15 @@ class Normalization(nn.Module):
         return (img - self.mean) / self.std
 
 
-def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
-                               style_img, content_img,
-                               content_layers, style_layers):
+def get_style_model_and_losses(
+    cnn,
+    normalization_mean,
+    normalization_std,
+    style_img,
+    content_img,
+    content_layers,
+    style_layers,
+):
     # normalization module
     normalization = Normalization(normalization_mean, normalization_std).to(device)
 
@@ -115,19 +127,21 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
     for layer in cnn.children():
         if isinstance(layer, nn.Conv2d):
             i += 1
-            name = 'conv_{}'.format(i)
+            name = "conv_{}".format(i)
         elif isinstance(layer, nn.ReLU):
-            name = 'relu_{}'.format(i)
+            name = "relu_{}".format(i)
             # The in-place version doesn't play very nicely with the ContentLoss
             # and StyleLoss we insert below. So we replace with out-of-place
             # ones here.
             layer = nn.ReLU(inplace=False)
         elif isinstance(layer, nn.MaxPool2d):
-            name = 'pool_{}'.format(i)
+            name = "pool_{}".format(i)
         elif isinstance(layer, nn.BatchNorm2d):
-            name = 'bn_{}'.format(i)
+            name = "bn_{}".format(i)
         else:
-            raise RuntimeError('Unrecognized layer: {}'.format(layer.__class__.__name__))
+            raise RuntimeError(
+                "Unrecognized layer: {}".format(layer.__class__.__name__)
+            )
 
         model.add_module(name, layer)
 
@@ -150,7 +164,7 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
         if isinstance(model[i], ContentLoss) or isinstance(model[i], StyleLoss):
             break
 
-    model = model[:(i + 1)]
+    model = model[: (i + 1)]
 
     return model, style_losses, content_losses
 
@@ -160,18 +174,33 @@ def get_input_optimizer(input_img):
     return optimizer
 
 
-async def run_style_transfer(cnn, normalization_mean, normalization_std,
-                       content_img, style_img, input_img, 
-                       content_layers, style_layers, num_steps=300,
-                       style_weight=1000000, content_weight=1):
+async def run_style_transfer(
+    cnn,
+    normalization_mean,
+    normalization_std,
+    content_img,
+    style_img,
+    input_img,
+    content_layers,
+    style_layers,
+    num_steps=300,
+    style_weight=1000000,
+    content_weight=1,
+):
     """Run the style transfer."""
 
     tick = time()
 
-    print('Building the style transfer model..')
-    model, style_losses, content_losses = get_style_model_and_losses(cnn,
-        normalization_mean, normalization_std, style_img, content_img,
-        content_layers, style_layers)
+    print("Building the style transfer model..")
+    model, style_losses, content_losses = get_style_model_and_losses(
+        cnn,
+        normalization_mean,
+        normalization_std,
+        style_img,
+        content_img,
+        content_layers,
+        style_layers,
+    )
 
     # We want to optimize the input and not the model parameters so we
     # update all the requires_grad fields accordingly
@@ -180,13 +209,12 @@ async def run_style_transfer(cnn, normalization_mean, normalization_std,
 
     optimizer = get_input_optimizer(input_img)
 
-    print('Optimizing..')
+    print("Optimizing..")
     run = [0]
 
     executing = time()
 
     while run[0] <= num_steps:
-        
         # Allow other users to interact with Bot while
         # photo processing
         if (time() - executing) > 1.0:
@@ -217,8 +245,11 @@ async def run_style_transfer(cnn, normalization_mean, normalization_std,
             run[0] += 1
             if run[0] % 50 == 0:
                 print("run {}:".format(run))
-                print('Style Loss : {:4f} Content Loss: {:4f}'.format(
-                    style_score.item(), content_score.item()))
+                print(
+                    "Style Loss : {:4f} Content Loss: {:4f}".format(
+                        style_score.item(), content_score.item()
+                    )
+                )
                 print()
 
             return style_score + content_score
@@ -228,7 +259,7 @@ async def run_style_transfer(cnn, normalization_mean, normalization_std,
     # a last correction...
     with torch.no_grad():
         input_img.clamp_(0, 1)
-    
+
     print(round((time() - tick), 2))
     return input_img
 
@@ -237,26 +268,34 @@ cnn = models.vgg19(pretrained=True).features.to(device).eval()
 
 
 async def get_transformed_photo(style, content, content_weight=30):
-
     with open("src/style_transfer/resolution.json") as json_file:
         data = json.load(json_file)
-        resolution = data['resolution']
+        resolution = data["resolution"]
 
     style_img, content_img, input_img = image_loader(style, content, resolution)
-    
-    # desired depth layers to compute style/content losses :
-    content_layers = ['conv_4']
-    style_layers = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
 
-    result = await run_style_transfer(cnn, cnn_normalization_mean, cnn_normalization_std,
-                                content_img, style_img, input_img, content_layers, style_layers,
-                                content_weight=content_weight)    
+    # desired depth layers to compute style/content losses :
+    content_layers = ["conv_4"]
+    style_layers = ["conv_1", "conv_2", "conv_3", "conv_4", "conv_5"]
+
+    result = await run_style_transfer(
+        cnn,
+        cnn_normalization_mean,
+        cnn_normalization_std,
+        content_img,
+        style_img,
+        input_img,
+        content_layers,
+        style_layers,
+        content_weight=content_weight,
+    )
 
     buff = BytesIO()
-    torchvision.utils.save_image(result, buff, 'PNG')
+    torchvision.utils.save_image(result, buff, "PNG")
     buff.seek(0)
     result = InputFile(buff)
 
     return result
+
 
 print(device)

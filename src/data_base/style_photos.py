@@ -29,8 +29,12 @@ async def read2():
     return cur.execute("SELECT * FROM style").fetchall()
 
 
+# async def get(data):
+#     return cur.execute("SELECT img FROM style WHERE id == ?", (data),).fetchone()
+
+
 async def get(data):
-    return cur.execute("SELECT img FROM style WHERE id == ?", data).fetchone()
+    return cur.execute(f"SELECT img FROM style WHERE id == {data}").fetchone()
 
 
 async def delete(data):
