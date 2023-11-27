@@ -40,6 +40,7 @@ async def command_help(message: types.Message):
 class FSMProcess(StatesGroup):
     choose_model = State()
     choose_style = State()
+    choose_styles_cnn2 = State()
     download_style = State()
     assign_style = State()
     load_content = State()
@@ -180,3 +181,12 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
     # await bot.send_photo(ID_ADMIN, style_id)
     # await bot.send_photo(ID_ADMIN, message.photo[-1].file_id)
     # await bot.send_photo(ID_ADMIN, result_mes.photo[-1].file_id)
+
+
+# model 2
+
+@dp.callback_query_handler(Text(equals="model_2"), state=FSMProcess.choose_model)
+async def choose_style(message: types.Message):
+    await FSMProcess.choose_styles_cnn2.set()
+    await example_photos.get_cnn2_styles(message)
+    await bot.send_message(message.from_user.id, mes.style_proportions, reply_markup=cancel_inline)
