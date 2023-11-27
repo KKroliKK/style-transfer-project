@@ -176,11 +176,11 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
     )
     result_mes = await bot.send_photo(message.from_user.id, result3)
 
-    await state.finish()
-
     # await bot.send_photo(ID_ADMIN, style_id)
     # await bot.send_photo(ID_ADMIN, message.photo[-1].file_id)
     # await bot.send_photo(ID_ADMIN, result_mes.photo[-1].file_id)
+
+    await state.finish()
 
 
 # model 2
@@ -208,3 +208,25 @@ async def choose_style(message: types.Message, state: FSMContext):
     
     await bot.send_message(message.from_user.id, mes.content_photo_cnn2, reply_markup=cancel_inline)
     await FSMProcess.load_content_cnn2.set()
+
+
+from model_cnn_2.inference import call_cnn2
+
+@dp.message_handler(content_types=["photo"], state=FSMProcess.load_content_cnn2)
+async def upload_content_photo(message: types.Message, state: FSMContext):
+    await bot.send_message(
+        message.from_user.id, mes.wait_result, reply_markup=ReplyKeyboardRemove()
+    )
+
+    async with state.proxy() as data:
+        styles_dict = data["styles_dict"]
+
+    content = await bot.get_file(message.photo[-1].file_id)
+    content = BytesIO(
+        requests.get(DOWNLOAD_URL + content.file_path, stream=True).content
+    )
+
+    result = await call_cnn2(content=content, style_index=styles_dict)
+    result_mes = await bot.send_photo(message.from_user.id, result, reply_markup=menu)
+
+    await state.finish()

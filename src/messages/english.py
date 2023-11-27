@@ -23,7 +23,7 @@ style_2 = "Do you want to load style image by yourself?\n"
 download_style = "Send your style photo.\n"
 choose_style = "Choose one of the styles above:\n"
 download_content = "Now you can send content photo.\n"
-wait_result = "Now please wait for result.\nIt can take about 5 minutes \
+wait_result = "Now please wait for result.\nIt can take about 10 seconds \
 to process the photo.\n"
 result = "Please wait for 3 resulting photos:\n"
 

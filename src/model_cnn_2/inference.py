@@ -5,7 +5,7 @@ from model_cnn_2.network import NeuralNetwork
 # set consts
 NUM_STYLE = 8
 content_file = "../../data/model_cnn_2/source/img.png"
-model_path = "../../models/model_cnn_2/"
+model_path = "models/model_cnn_2/"
 save_path = "../../data/model_cnn_2/inference/"
 style_index = -1
 
@@ -54,6 +54,53 @@ def inference(content_file: str, model_path: str, save_path: str, style_index: d
     stylized_image = model(content_image, style_code)
 
     im_save(stylized_image, save_path + "new_images.jpg")
+
+
+
+import torch
+import torchvision.transforms as transforms
+from PIL import Image
+import torchvision
+from aiogram.types.input_file import InputFile
+from io import BytesIO
+
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = "cpu"
+
+model = NeuralNetwork().to(device)
+model.load_state_dict(torch.load(model_path + "model.ckpt"))
+model.eval()
+
+
+async def image_loader(content, resolution=3840):
+    content = Image.open(content)
+
+    max_pixels = max(content.size)
+    scale = resolution / max_pixels if resolution < max_pixels else 1
+    scale = (int(content.size[1] * scale), int(content.size[0] * scale))
+
+    loader = transforms.Compose([transforms.Resize(scale), transforms.ToTensor()])
+    content = loader(content).unsqueeze(0)
+
+    return content.to(device, torch.float)
+
+
+async def call_cnn2(content, style_index):
+    content_image = await image_loader(content)
+
+    style_code = torch.zeros(1, NUM_STYLE, 1)
+
+    for key in style_index:
+        style_code[:, key, :] = style_index[key]
+
+    result = model(content_image, style_code)
+
+    buff = BytesIO()
+    torchvision.utils.save_image(result, buff, "PNG")
+    buff.seek(0)
+    result = InputFile(buff)
+
+    return result
 
 
 if __name__ == "__main__":
