@@ -21,8 +21,13 @@ async def add(state):
 
 
 async def read(message):
-    for ret in cur.execute("SELECT * FROM example").fetchall():
+    for ret in cur.execute("SELECT * FROM example").fetchall()[:3]:
         await bot.send_photo(message.from_user.id, ret[1])
+
+
+async def get_cnn2_styles(message):
+    styles_photo = cur.execute("SELECT * FROM example").fetchall()[3]
+    await bot.send_photo(message.from_user.id, styles_photo[1])
 
 
 async def delete():
