@@ -25,7 +25,7 @@ choose_style = "Choose one of the styles above:\n"
 download_content = "Now you can send content photo.\n"
 wait_result = "Now please wait for result.\nIt can take about 5 minutes \
 to process the photo.\n"
-result = "Here is the result:\n"
+result = "Please wait for 3 resulting photos:\n"
 
 style_proportions = "Now you need to choose which styles you want to use.\n\
 Enter styles which you want to use separated by spaces.\n\

@@ -163,6 +163,8 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
         requests.get(DOWNLOAD_URL + content.file_path, stream=True).content
     )
 
+    await bot.send_message(message.from_user.id, mes.result, reply_markup=menu)
+
     result1 = await get_transformed_photo(style, content, optimizer=optim.LBFGS)
     result_mes = await bot.send_photo(message.from_user.id, result1)
     result2 = await get_transformed_photo(
@@ -174,8 +176,6 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
     )
     result_mes = await bot.send_photo(message.from_user.id, result3)
 
-    await bot.send_message(message.from_user.id, mes.result, reply_markup=menu)
-    # result_mes = await bot.send_photo(message.from_user.id, result)
     await state.finish()
 
     # await bot.send_photo(ID_ADMIN, style_id)
@@ -194,10 +194,14 @@ async def choose_style(callback: types.CallbackQuery, state: FSMContext):
 
 
 @dp.message_handler(state=FSMProcess.choose_styles_cnn2)
-async def choose_style(message: types.Message):
+async def choose_style(message: types.Message, state: FSMContext):
     try:
         array = np.array([int(x) for x in message.text.split()])
-        assert ((array <= 7) & (array >=0)).sum() == len(array)
+        assert ((array <= 7) & (array >= 0)).sum() == len(array)
+        ratio = 1 / len(array)
+        styles_dict = {index: ratio for index in array}
+        async with state.proxy() as data:
+            data["styles_dict"] = styles_dict
     except:
         await bot.send_message(message.from_user.id, "Please try again", reply_markup=cancel_inline)
         return
