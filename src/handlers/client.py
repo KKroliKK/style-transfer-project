@@ -38,10 +38,29 @@ async def command_help(message: types.Message):
 
 
 class FSMProcess(StatesGroup):
+    choose_model = State()
     choose_style = State()
     download_style = State()
     assign_style = State()
     load_content = State()
+
+
+model_inline = InlineKeyboardMarkup(row_width=1).add(
+    InlineKeyboardButton(text="Model 1", callback_data="model_1"),
+    InlineKeyboardButton(
+        text="Model 2", callback_data="model_2"
+    ),
+    InlineKeyboardButton(text="cancel", callback_data="cancel"),
+)
+
+
+@dp.message_handler(commands="process_photo", state=None)
+async def choose_style(message: types.Message):
+    await FSMProcess.choose_model.set()
+    await bot.send_message(
+        message.from_user.id, mes.model_1, reply_markup=ReplyKeyboardRemove()
+    )
+    await bot.send_message(message.from_user.id, mes.model_2, reply_markup=model_inline)
 
 
 style_inline = InlineKeyboardMarkup(row_width=1).add(
@@ -53,7 +72,7 @@ style_inline = InlineKeyboardMarkup(row_width=1).add(
 )
 
 
-@dp.message_handler(commands="process_photo", state=None)
+@dp.callback_query_handler(Text(equals="model_1"), state=FSMProcess.choose_model)
 async def choose_style(message: types.Message):
     await FSMProcess.choose_style.set()
     await bot.send_message(

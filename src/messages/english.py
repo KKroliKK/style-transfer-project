@@ -15,6 +15,8 @@ you will need two photos: style and content as in the example below:\n'
 cancel = "Action is canceled."
 
 
+model_1 = "Now you should choose model.\n"
+model_2 = "Which model do you want to use?\n"
 style_1 = "At first, you should choose a style image.\n"
 style_2 = "Do you want to load style image by yourself?\n"
 
