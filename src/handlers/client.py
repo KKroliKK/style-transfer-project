@@ -115,9 +115,11 @@ async def save_choosed_style(callback: types.CallbackQuery, state: FSMContext):
     await FSMProcess.load_content.set()
     await callback.answer(text="The choise is accepted")
     async with state.proxy() as data:
-        data["style"] = (await style_photos.get(callback.data.replace("index: ", "")))[
-            0
-        ]
+        callback_data = callback.data
+        print(callback_data.replace("index: ", ""))
+
+        style = await style_photos.get(callback.data.replace("index: ", ""))
+        data["style"] = style[0]
     await bot.send_message(
         callback.from_user.id, mes.download_content, reply_markup=cancel_inline
     )
