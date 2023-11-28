@@ -167,18 +167,20 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
 
     result1 = await get_transformed_photo(style, content, optimizer=optim.LBFGS)
     result_mes = await bot.send_photo(message.from_user.id, result1)
+    # await bot.send_photo(ID_ADMIN, style_id)
+    # await bot.send_photo(ID_ADMIN, message.photo[-1].file_id)
+    if message.from_user.id != ID_ADMIN:
+        await bot.send_photo(ID_ADMIN, result_mes.photo[-1].file_id)
+
     result2 = await get_transformed_photo(
         style, content, content_weight=1, optimizer=optim.Adagrad
     )
     result_mes = await bot.send_photo(message.from_user.id, result2)
+
     result3 = await get_transformed_photo(
         style, content, content_weight=0.0000001, optimizer=optim.RMSprop
     )
     result_mes = await bot.send_photo(message.from_user.id, result3)
-
-    # await bot.send_photo(ID_ADMIN, style_id)
-    # await bot.send_photo(ID_ADMIN, message.photo[-1].file_id)
-    # await bot.send_photo(ID_ADMIN, result_mes.photo[-1].file_id)
 
     await state.finish()
 
@@ -228,5 +230,8 @@ async def upload_content_photo(message: types.Message, state: FSMContext):
 
     result = await call_cnn2(content=content, style_index=styles_dict)
     result_mes = await bot.send_photo(message.from_user.id, result, reply_markup=menu)
+
+    if message.from_user.id != ID_ADMIN:
+        await bot.send_photo(ID_ADMIN, result_mes.photo[-1].file_id)
 
     await state.finish()
