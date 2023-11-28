@@ -27,7 +27,7 @@ async def get_transformed_photo(
     content_layers = ["conv_4"]
     style_layers = ["conv_1", "conv_2", "conv_3", "conv_4", "conv_5"]
 
-    result = run_style_transfer(
+    result = await run_style_transfer(
         cnn,
         cnn_normalization_mean,
         cnn_normalization_std,

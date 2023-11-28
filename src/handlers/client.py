@@ -217,7 +217,7 @@ from model_cnn_2.inference import call_cnn2
 @dp.message_handler(content_types=["photo"], state=FSMProcess.load_content_cnn2)
 async def upload_content_photo(message: types.Message, state: FSMContext):
     await bot.send_message(
-        message.from_user.id, mes.wait_result, reply_markup=ReplyKeyboardRemove()
+        message.from_user.id, mes.wait_result_2, reply_markup=ReplyKeyboardRemove()
     )
 
     async with state.proxy() as data:

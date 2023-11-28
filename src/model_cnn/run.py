@@ -1,4 +1,5 @@
 from time import time
+import asyncio
 
 import torch
 import torch.optim as optim
@@ -10,7 +11,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 RESOLUTION = 480
 
 
-def run_style_transfer(
+async def run_style_transfer(
     cnn,
     normalization_mean,
     normalization_std,
@@ -50,6 +51,12 @@ def run_style_transfer(
     executing = time()
 
     while run[0] <= num_steps:
+
+        # Allow other users to interact with Bot while
+        # photo processing
+        if (time() - executing) > 1.0:
+            await asyncio.sleep(0.001)
+            executing = time()
 
         def closure():
             with torch.no_grad():
