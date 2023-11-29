@@ -1,8 +1,8 @@
 from io import BytesIO
 
+import numpy as np
 import requests
 import torch.optim as optim
-import numpy as np
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -208,6 +208,7 @@ async def choose_style(message: types.Message, state: FSMContext):
 
 
 from model_cnn_2.inference import call_cnn2
+
 
 @dp.message_handler(content_types=["photo"], state=FSMProcess.load_content_cnn2)
 async def upload_content_photo(message: types.Message, state: FSMContext):

@@ -1,9 +1,17 @@
+from io import BytesIO
+
 import torch
+import torchvision
+import torchvision.transforms as transforms
+from aiogram.types.input_file import InputFile
+from PIL import Image
+
 from model_cnn_2.helpers import im_load, im_save
 from model_cnn_2.network import NeuralNetwork
 
 # set consts
 NUM_STYLE = 8
+device = "cpu"
 content_file = "../../data/model_cnn_2/source/img.png"
 model_path = "models/model_cnn_2/"
 save_path = "../../data/model_cnn_2/inference/"
@@ -55,17 +63,6 @@ def inference(content_file: str, model_path: str, save_path: str, style_index: d
 
     im_save(stylized_image, save_path + "new_images.jpg")
 
-
-
-import torch
-import torchvision.transforms as transforms
-from PIL import Image
-import torchvision
-from aiogram.types.input_file import InputFile
-from io import BytesIO
-
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = "cpu"
 
 model = NeuralNetwork().to(device)
 model.load_state_dict(torch.load(model_path + "model.ckpt"))

@@ -2,9 +2,10 @@ import torch
 import torch.utils.data
 from PIL import Image
 from torchvision import transforms
+
 from model_reconet.utils import (gram_matrix, l2_squared, postprocess_reconet,
-                               preprocess_for_reconet, resize_optical_flow,
-                               rgb_to_luminance, warp_optical_flow)
+                                 preprocess_for_reconet, resize_optical_flow,
+                                 rgb_to_luminance, warp_optical_flow)
 
 
 def output_temporal_loss(

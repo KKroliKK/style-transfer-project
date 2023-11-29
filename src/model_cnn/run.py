@@ -1,5 +1,5 @@
-from time import time
 import asyncio
+from time import time
 
 import torch
 import torch.optim as optim

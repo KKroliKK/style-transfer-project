@@ -2,10 +2,11 @@ import os
 
 import numpy as np
 import torch
+
 from model_reconet.ffmpeg_tools import VideoReader, VideoWriter
 from model_reconet.network import ReCoNet
-from model_reconet.utils import (Dummy, nchw_to_nhwc, nhwc_to_nchw, postprocess_reconet,
-                   preprocess_for_reconet)
+from model_reconet.utils import (Dummy, nchw_to_nhwc, nhwc_to_nchw,
+                                 postprocess_reconet, preprocess_for_reconet)
 
 input_path = "../../data/model_reconet/input/videoplayback.mp4"
 output_path = "../../data/model_reconet/output/output.mp4"
