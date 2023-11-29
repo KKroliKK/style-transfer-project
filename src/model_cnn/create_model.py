@@ -69,5 +69,6 @@ def get_style_model_and_losses(
 
 
 def get_input_optimizer(input_img, optimizer=optim.LBFGS):
-    optimizer = optimizer([input_img])
+    lr = 0.25 if optimizer != optim.LBFGS else 1
+    optimizer = optimizer([input_img], lr=lr)
     return optimizer

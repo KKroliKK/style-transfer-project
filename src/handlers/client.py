@@ -173,14 +173,9 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
         await bot.send_photo(ID_ADMIN, result_mes.photo[-1].file_id)
 
     result2 = await get_transformed_photo(
-        style, content, content_weight=1, optimizer=optim.Adagrad
+        style, content, content_weight=30, optimizer=optim.Adagrad
     )
     result_mes = await bot.send_photo(message.from_user.id, result2)
-
-    result3 = await get_transformed_photo(
-        style, content, content_weight=0.0000001, optimizer=optim.RMSprop
-    )
-    result_mes = await bot.send_photo(message.from_user.id, result3)
 
     await state.finish()
 
