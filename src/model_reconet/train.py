@@ -8,10 +8,15 @@ import model_reconet.custom_transforms
 from model_reconet.dataset import FlyingThings3DDataset, MonkaaDataset
 from model_reconet.losses import *
 from model_reconet.network import ReCoNet, Vgg16
-from model_reconet.utils import (RunningLossesContainer, gram_matrix,
-                                 occlusion_mask_from_flow, postprocess_reconet,
-                                 preprocess_for_reconet, preprocess_for_vgg,
-                                 tensors_sum)
+from model_reconet.utils import (
+    RunningLossesContainer,
+    gram_matrix,
+    occlusion_mask_from_flow,
+    postprocess_reconet,
+    preprocess_for_reconet,
+    preprocess_for_vgg,
+    tensors_sum,
+)
 
 if __name__ == "__main__":
     running_losses = RunningLossesContainer()

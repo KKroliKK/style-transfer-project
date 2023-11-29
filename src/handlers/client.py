@@ -7,8 +7,11 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
-                           ReplyKeyboardRemove)
+from aiogram.types import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardRemove,
+)
 
 from create_bot import DOWNLOAD_URL, ID_ADMIN, bot, dp
 from data_base import example_photos, style_photos
@@ -50,9 +53,7 @@ class FSMProcess(StatesGroup):
 
 model_inline = InlineKeyboardMarkup(row_width=1).add(
     InlineKeyboardButton(text="Model 1", callback_data="model_1"),
-    InlineKeyboardButton(
-        text="Model 2", callback_data="model_2"
-    ),
+    InlineKeyboardButton(text="Model 2", callback_data="model_2"),
     InlineKeyboardButton(text="cancel", callback_data="cancel"),
 )
 
@@ -82,7 +83,9 @@ async def choose_style(callback: types.CallbackQuery, state: FSMContext):
     await bot.send_message(
         callback.from_user.id, mes.style_1, reply_markup=ReplyKeyboardRemove()
     )
-    await bot.send_message(callback.from_user.id, mes.style_2, reply_markup=style_inline)
+    await bot.send_message(
+        callback.from_user.id, mes.style_2, reply_markup=style_inline
+    )
 
 
 @dp.callback_query_handler(Text(equals="cancel"), state="*")  # FSMProcess.choose_style)
@@ -182,12 +185,15 @@ async def dowload_content_photo(message: types.Message, state: FSMContext):
 
 # model 2
 
+
 @dp.callback_query_handler(Text(equals="model_2"), state=FSMProcess.choose_model)
 async def choose_style(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer("2-nd model is chosen")
     await FSMProcess.choose_styles_cnn2.set()
     await example_photos.get_cnn2_styles(callback)
-    await bot.send_message(callback.from_user.id, mes.style_proportions, reply_markup=cancel_inline)
+    await bot.send_message(
+        callback.from_user.id, mes.style_proportions, reply_markup=cancel_inline
+    )
 
 
 @dp.message_handler(state=FSMProcess.choose_styles_cnn2)
@@ -200,10 +206,14 @@ async def choose_style(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data["styles_dict"] = styles_dict
     except:
-        await bot.send_message(message.from_user.id, "Please try again", reply_markup=cancel_inline)
+        await bot.send_message(
+            message.from_user.id, "Please try again", reply_markup=cancel_inline
+        )
         return
-    
-    await bot.send_message(message.from_user.id, mes.content_photo_cnn2, reply_markup=cancel_inline)
+
+    await bot.send_message(
+        message.from_user.id, mes.content_photo_cnn2, reply_markup=cancel_inline
+    )
     await FSMProcess.load_content_cnn2.set()
 
 

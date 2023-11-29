@@ -8,8 +8,11 @@ from torchvision.models.feature_extraction import create_feature_extractor
 from tqdm import tqdm
 
 from model_cnn_2.helpers import DataProcessor, ImageDataset
-from model_cnn_2.losses import (get_content_loss, get_style_loss,
-                                get_total_variation_loss)
+from model_cnn_2.losses import (
+    get_content_loss,
+    get_style_loss,
+    get_total_variation_loss,
+)
 from model_cnn_2.network import NeuralNetwork
 
 # set nodes

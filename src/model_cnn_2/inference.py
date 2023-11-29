@@ -18,7 +18,9 @@ save_path = "../../data/model_cnn_2/inference/"
 style_index = -1
 
 
-def inference(content_file: str, model_path: str, save_path: str, style_index: dict or int):
+def inference(
+    content_file: str, model_path: str, save_path: str, style_index: dict or int
+):
     """
     Inference of the network
 

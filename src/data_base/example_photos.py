@@ -29,7 +29,9 @@ async def read(message):
 
 async def get_cnn2_styles(message):
     styles_photo = cur.execute("SELECT * FROM example").fetchall()[3]
-    await bot.send_photo(message.from_user.id, styles_photo[1], reply_markup=ReplyKeyboardRemove())
+    await bot.send_photo(
+        message.from_user.id, styles_photo[1], reply_markup=ReplyKeyboardRemove()
+    )
 
 
 async def delete():

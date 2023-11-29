@@ -4,8 +4,7 @@ from time import time
 import torch
 import torch.optim as optim
 
-from model_cnn.create_model import (get_input_optimizer,
-                                    get_style_model_and_losses)
+from model_cnn.create_model import get_input_optimizer, get_style_model_and_losses
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 RESOLUTION = 480
@@ -51,7 +50,6 @@ async def run_style_transfer(
     executing = time()
 
     while run[0] <= num_steps:
-
         # Allow other users to interact with Bot while
         # photo processing
         if (time() - executing) > 1.0:
